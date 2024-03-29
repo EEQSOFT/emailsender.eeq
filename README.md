@@ -113,6 +113,6 @@ docker-compose down
 
 ## Information
 
-Copyright (c) 2023 EEQSOFT
+Copyright (c) 2024 EEQSOFT
 
 https://emailsender.eeqsoft.com
