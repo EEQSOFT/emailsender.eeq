@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+
+        <title>EmailSender with Newsletter Documentation</title>
+
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            a {
+                text-decoration: none;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+            p {
+                text-align: justify;
+            }
+
+            blockquote {
+                padding: 10px;
+                border-left: 4px solid #aaa;
+                background: #eee;
+                font-style: italic;
+            }
+
+            .container {
+                max-width: 770px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>EmailSender with Newsletter</h1>
+
+            <span id="introduction"></span>
+
+            <h2>Introduction</h2>
+
+            <p>
+                This application allows users to send unlimited emails.
+                The emails can be imported from a file, added manually by these users or via the newsletter subscription form.
+                All you need is your own dedicated server or hosting service.
+                The application requires PHP and MySQL so it is cheap and easy to use.
+            </p>
+
+            <h3>More Information</h3>
+
+            <ol>
+                <li><a href="#installation">Installation</a></li>
+                <li><a href="#usage">Usage</a></li>
+                <li><a href="#development">Development</a></li>
+                <li><a href="#upgrade">Upgrade</a></li>
+                <li><a href="#change-logs">Change Logs</a></li>
+            </ol>
+
+            <span id="installation"></span>
+
+            <h2>1. Installation</h2>
+
+            <h3>Server Requirements</h3>
+
+            <p>
+                This application requires <strong>PHP 8.x</strong> and <strong>MySQL 5.x-8.x</strong>.
+                No knowledge of any framework is required.
+                The application uses <strong>json</strong> and <strong>mod_rewrite</strong>.
+                It uses <strong>cron jobs</strong> as well.
+                The <strong>exec()</strong> function cannot be blocked by your hosting provider.
+                You need to make sure that your hosting service meets these requirements.
+            </p>
+
+            <h3>Hosting Configuration</h3>
+
+            <p>
+                Set the root directory of the php files to "public".
+                Set the path for your hosting:
+            </p>
+
+            <blockquote>&lt;path to project&gt;/public</blockquote>
+
+            <p>
+                Create a database with full user permissions.
+                Use the database name as in your config:
+            </p>
+
+            <blockquote>for example: "emailsender"</blockquote>
+
+            <h3>Application Configuration</h3>
+
+            <p>
+                Change the settings in the "database.php" file.
+                Set as in the "database.php.dist" file (check "config"):
+            </p>
+
+            <blockquote>
+                'db_host' => 'localhost'<br>
+                'db_port' => 3306<br>
+                'db_user' => '&lt;user&gt;'<br>
+                'db_password' => '&lt;password&gt;'<br>
+                'db_database' => 'emailsender'
+            </blockquote>
+
+            <p>
+                If necessary, set these permissions.
+                Change the permissions of the "options.php" file to 666:
+            </p>
+
+            <blockquote>&lt;path to project&gt;/config/options.php</blockquote>
+
+            <p>Change the permissions of the directories to 777:</p>
+
+            <blockquote>
+                &lt;path to project&gt;/cron<br>
+                &lt;path to project&gt;/data/Export<br>
+                &lt;path to project&gt;/data/Import
+            </blockquote>
+
+            <h3>Application Installation</h3>
+
+            <p>
+                Install the application by running the "install.php" file.
+                Open the url below in your browser:
+            </p>
+
+            <blockquote>https://emailsender.&lt;domain.com&gt;/install.php</blockquote>
+
+            <p>
+                Run this web application in your browser.
+                Open the url below:
+            </p>
+
+            <blockquote>https://emailsender.&lt;domain.com&gt;</blockquote>
+
+            <p>
+                Check if your hosting allows you to use <strong>exec()</strong> for <strong>Cron</strong>.
+                The <strong>Cron</strong> class uses the <strong>exec()</strong> function to send emails.
+                For example, it looks like below:
+            </p>
+
+            <blockquote>exec('crontab ' . $cronFile);</blockquote>
+
+            <p>
+                Check the "Send" menu option.
+                If your email sending starts without errors, everything is fine.
+            </p>
+
+            <span id="usage"></span>
+
+            <h2>2. Usage</h2>
+
+            <p>
+                Using this application is very simple.
+                You need to add a list, then add emails to that list.
+                The emails can be imported from a file.
+                You can add them manually.
+                Subscribers' emails can also be added via the newsletter form.
+                Then add some text and use the "Send" option from the app menu...
+                See the menu descriptions below.
+            </p>
+
+            <h3>Register</h3>
+
+            <p>
+                You need to add one administrator after installation.
+                This admin can add more users.
+                Account activation is required.
+                You must click the activation link in your email.
+            </p>
+
+            <h3>Log In</h3>
+
+            <p>
+                After successful activation, you can log in to the application.
+                Enter your login or email and password.
+            </p>
+
+            <h3>Reset Password</h3>
+
+            <p>
+                You can reset your password.
+                For this purpose, enter your login or email.
+                Then click the link in your email.
+                A page will open where you must enter a new password.
+            </p>
+
+            <h3>Users</h3>
+
+            <p>On this page, the app administrators can add and delete users.</p>
+
+            <h3>Log Out</h3>
+
+            <p>Click this menu option to log out.</p>
+
+            <h3>Home</h3>
+
+            <p>The home page shows an example of using the newsletter subscription form.</p>
+
+            <h3>Options</h3>
+
+            <p>
+                On this page you can find various app options.
+                These options are:
+            </p>
+
+            <ul>
+                <li><strong>App Version</strong> - This application version</li>
+                <li><strong>Admin Email</strong> - The email used to send</li>
+                <li><strong>Emails Number</strong> - The number of emails sent in the package every period of time</li>
+                <li><strong>Time Period</strong> - The time in minutes between sending each package of emails</li>
+                <li><strong>Unsubscribe Active</strong> - Whether to add an unsubscribe link to your emails</li>
+                <li><strong>Unsubscribe Url</strong> - The url with the domain for this administrative application</li>
+                <li><strong>Newsletter Name</strong> - The name of the newsletter list</li>
+            </ul>
+
+            <h3>Lists</h3>
+
+            <p>On this page you can add and delete email lists.</p>
+
+            <h3>Emails</h3>
+
+            <p>
+                You can view your emails here.
+                First select a list.
+                Then you can search for a specific email address.
+                The email list allows you to delete any of them.
+            </p>
+
+            <h3>Insert</h3>
+
+            <p>
+                Select any list where you want to add an email address.
+                Then add the owner's name and the email itself.
+            </p>
+
+            <h3>Export</h3>
+
+            <p>
+                Select your email list.
+                Now you can export your emails to a file.
+            </p>
+
+            <h3>Import</h3>
+
+            <p>Here you can import emails from a file to any selected list.</p>
+
+            <h3>Write</h3>
+
+            <p>
+                Enter a subject and message.
+                When you're done, save your text.
+                This text will appear in the list below.
+                You can edit and delete any texts from this list.
+                Editing itself is like writing.
+                Press "Save" to finish.
+            </p>
+
+            <h3>Send</h3>
+
+            <p>
+                You can run one email sending at a time.
+                To do this, select an email list.
+                Select a text subject.
+                Press "Send" to start sending your emails.
+                To start a new email sending, stop the current one first.
+                Your email sending stops automatically when it's finished.
+                You can also end it manually.
+                To do this, press the "Stop" button.
+            </p>
+
+            <span id="development"></span>
+
+            <h2>3. Development</h2>
+
+            <p>
+                The easiest way is to use <strong>Docker Desktop</strong> to develop this software.
+                To do so, proceed as shown below.
+            </p>
+
+            <p>Go to the application directory:</p>
+
+            <blockquote>cd &lt;path to project&gt;</blockquote>
+
+            <p>Start the application stack defined in docker-compose.yml:</p>
+
+            <blockquote>docker-compose up -d</blockquote>
+
+            <p>Set the permissions and access for the php-apache container:</p>
+
+            <blockquote>
+                docker exec -it php-apache bash<br>
+                cd /var/www/html/config<br>
+                ls -l<br>
+                chmod 666 /var/www/html/config/options.php<br>
+                chown -R www-data:www-data /var/www/html/config/options.php<br>
+                ls -l<br>
+                exit
+            </blockquote>
+
+            <p>Open this web application and/or <strong>phpMyAdmin</strong> in your browser:</p>
+
+            <blockquote>
+                http://localhost:8000<br>
+                http://localhost:8001
+            </blockquote>
+
+            <p>Stop the application stack:</p>
+
+            <blockquote>docker-compose down</blockquote>
+
+            <span id="upgrade"></span>
+
+            <h2>4. Upgrade</h2>
+
+            <p>
+                Updating is very simple.
+                Delete old files and upload new ones.
+                Set as for installation (see Application Configuration).
+                Upgrade the application by running the "install.php" file.
+                Open the url below in your browser:
+            </p>
+
+            <blockquote>https://emailsender.&lt;domain.com&gt;/install.php</blockquote>
+
+            <p>Your database will be automatically configured.</p>
+
+            <span id="change-logs"></span>
+
+            <h2>5. Change Logs</h2>
+
+            <h3>v1.0.0 - 29 May 2023</h3>
+
+            <p>- Initial Release</p>
+        </div>
+    </body>
+</html>

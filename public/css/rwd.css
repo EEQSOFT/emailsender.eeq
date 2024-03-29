@@ -1,0 +1,36 @@
+@media (max-width: 767px) {
+    .navbar div {
+        text-align: center;
+    }
+}
+
+@media (max-width: 639px) {
+    .table-user th:nth-child(2),
+    .table-user td:nth-child(2) {
+        display: none;
+    }
+
+    .table-email th:first-child,
+    .table-email th:nth-child(2),
+    .table-email td:first-child,
+    .table-email td:nth-child(2) {
+        display: none;
+    }
+
+    .table-text th:first-child,
+    .table-text td:first-child {
+        display: none;
+    }
+
+    .table-user-login {
+        width: 70%;
+    }
+
+    .table-email-email {
+        width: 90%;
+    }
+
+    .table-text-subject {
+        width: 80%;
+    }
+}

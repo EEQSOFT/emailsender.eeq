@@ -1,0 +1,12 @@
+<?php
+
+return
+[
+    'db_host' => 'localhost',
+    'db_port' => 3306,
+    'db_user' => 'root',
+    'db_password' => '',
+    'db_database' => 'emailsender',
+    'db_names' => 'utf8mb4',
+    'db_collate' => 'utf8mb4_unicode_ci'
+];

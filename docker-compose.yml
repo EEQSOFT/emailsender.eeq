@@ -1,0 +1,39 @@
+version: '3.9'
+services:
+    php-apache-environment:
+        container_name: php-apache
+        build:
+            context: .
+            dockerfile: Dockerfile
+        depends_on:
+            - db
+        ports:
+            - '8000:80'
+        volumes:
+            - .:/var/www/html
+            - ./php-apache.conf:/etc/apache2/sites-enabled/000-default.conf
+    db:
+        container_name: db
+        image: mysql:8.0
+        restart: always
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: true
+            MYSQL_ROOT_PASSWORD:
+            MYSQL_DATABASE: emailsender
+            MYSQL_USER: emailsender
+            MYSQL_PASSWORD: 1234567890
+        ports:
+            - '9906:3306'
+    phpmyadmin:
+        container_name: pma
+        image: phpmyadmin/phpmyadmin
+        restart: always
+        environment:
+            PMA_ARBITRARY: 1
+            PMA_HOST: db
+            PMA_PORT: 3306
+            UPLOAD_LIMIT: 100M
+        depends_on:
+            - db
+        ports:
+            - '8001:80'
