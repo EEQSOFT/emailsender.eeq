@@ -1,0 +1,31 @@
+1. EmailSender with Newsletter
+
+This application is licensed under a Standard License.
+
+# License and Terms
+
+A user purchases the license to use this application. The user does not
+become the owner of this application. The purchaser may modify but may not
+resell this application. Spam and any illegal activities using this app
+are not allowed. The owner of this application does not take any
+responsibility for the actions of the user. Only the user is responsible
+for the use of this application. The owner of this application takes
+no responsibility for any material losses resulting from the use of this
+application. By purchasing the user license you agree to these terms.
+
+2. Bootstrap and jQuery
+
+This application uses Bootstrap and jQuery which are licensed
+under the MIT License.
+
+# MIT License
+
+The MIT license is a permissive software license. Basically
+you can do whatever you want as long as you include the original
+copyright and license notices in any copy of the software/source.
+
+https://getbootstrap.com/docs/5.3/about/license/
+https://github.com/twbs/bootstrap/blob/main/LICENSE
+
+https://jquery.org/license/
+https://github.com/jquery/jquery/blob/main/LICENSE.txt

@@ -69,19 +69,19 @@ if ($options['installed']) {
 ) {
     if (
         iv($optionData['option_version']) >= iv('0.1.0')
-        && iv($optionData['option_version']) < iv('0.1.1')
+        && iv($optionData['option_version']) < iv('1.0.0')
     ) {
-        if ($or->setOptionVersion('0.1.1')) {
-            $optionData['option_version'] = '0.1.1';
+        if ($or->setOptionVersion('1.0.0')) {
+            $optionData['option_version'] = '1.0.0';
         }
     }
 
     if (
-        iv($optionData['option_version']) >= iv('0.1.1')
-        && iv($optionData['option_version']) < iv('0.1.2')
+        iv($optionData['option_version']) >= iv('1.0.0')
+        && iv($optionData['option_version']) < iv('1.0.1')
     ) {
-        if ($or->setOptionVersion('0.1.2')) {
-            $optionData['option_version'] = '0.1.2';
+        if ($or->setOptionVersion('1.0.1')) {
+            $optionData['option_version'] = '1.0.1';
         }
     }
 
