@@ -18,8 +18,8 @@ RewriteBase /
 
 # RewriteCond %{HTTPS} !^on$
 # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
-# RewriteCond %{HTTP_HOST} !^emailsender\.domain\.com$ [NC]
-# RewriteCond %{HTTP_HOST} !^127\.0\.0\.1$ [NC]
+# RewriteCond %{HTTP_HOST} !^emailsender\.domain\.com$
+# RewriteCond %{HTTP_HOST} !^127\.0\.0\.1$
 # RewriteRule ^(.*)$ https://emailsender.domain.com/$1 [R=301,L]
 # RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?emailsender\.domain\.com/ [NC]
 # RewriteCond %{HTTP_REFERER} !^http(s)?://127\.0\.0\.1/ [NC]
