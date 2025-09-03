@@ -26,10 +26,13 @@
             }
 
             blockquote {
+                margin-left: 20px;
+                margin-right: 0;
                 padding: 10px;
                 border-left: 4px solid #aaa;
                 background: #eee;
                 font-style: italic;
+                overflow-x: auto;
             }
 
             .container {
@@ -41,7 +44,7 @@
             @media (min-width: 2500px) {
                 body {
                     margin: 80px 40px 80px 40px;
-                    font-size: 28px;
+                    font-size: 32px;
                 }
 
                 h1 {
@@ -62,9 +65,11 @@
                 p {
                     margin-top: 30px;
                     margin-bottom: 30px;
+                    line-height: 36px;
                 }
 
                 blockquote {
+                    margin-left: 40px;
                     padding: 20px;
                     border-left: 8px solid #aaa;
                 }
@@ -125,7 +130,7 @@
                 Set the path for your hosting:
             </p>
 
-            <blockquote>&lt;path to project&gt;/public</blockquote>
+            <blockquote>&lt;path&nbsp;to&nbsp;project&gt;/public</blockquote>
 
             <p>
                 Create a database with full user permissions.
@@ -154,14 +159,14 @@
                 Change the permissions of the "options.php" file to 666:
             </p>
 
-            <blockquote>&lt;path to project&gt;/config/options.php</blockquote>
+            <blockquote>&lt;path&nbsp;to&nbsp;project&gt;/config/options.php</blockquote>
 
             <p>Change the permissions of the directories to 777:</p>
 
             <blockquote>
-                &lt;path to project&gt;/cron<br>
-                &lt;path to project&gt;/data/Export<br>
-                &lt;path to project&gt;/data/Import
+                &lt;path&nbsp;to&nbsp;project&gt;/cron<br>
+                &lt;path&nbsp;to&nbsp;project&gt;/data/Export<br>
+                &lt;path&nbsp;to&nbsp;project&gt;/data/Import
             </blockquote>
 
             <h3>Application Installation</h3>
@@ -327,7 +332,7 @@
 
             <p>Go to the application directory:</p>
 
-            <blockquote>cd &lt;path to project&gt;</blockquote>
+            <blockquote>cd &lt;path&nbsp;to&nbsp;project&gt;</blockquote>
 
             <p>Start the application stack defined in "docker-compose.yml":</p>
 
