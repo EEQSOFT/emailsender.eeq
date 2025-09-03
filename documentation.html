@@ -9,6 +9,7 @@
 
         <style>
             body {
+                margin: 40px 20px 40px 20px;
                 font-family: Arial, Helvetica, sans-serif;
             }
 
@@ -35,6 +36,44 @@
                 max-width: 770px;
                 margin-left: auto;
                 margin-right: auto;
+            }
+
+            @media (min-width: 2500px) {
+                body {
+                    margin: 80px 40px 80px 40px;
+                    font-size: 28px;
+                }
+
+                h1 {
+                    margin: 40px 0 40px 0;
+                    font-size: 72px;
+                }
+
+                h2 {
+                    margin: 40px 0 40px 0;
+                    font-size: 56px;
+                }
+
+                h3 {
+                    margin: 40px 0 40px 0;
+                    font-size: 38px;
+                }
+
+                p {
+                    margin-top: 30px;
+                    margin-bottom: 30px;
+                }
+
+                blockquote {
+                    padding: 20px;
+                    border-left: 8px solid #aaa;
+                }
+
+                .container {
+                    width: 1540px;
+                    max-width: 1540px;
+                    margin-bottom: 40px;
+                }
             }
         </style>
     </head>
@@ -290,11 +329,11 @@
 
             <blockquote>cd &lt;path to project&gt;</blockquote>
 
-            <p>Start the application stack defined in docker-compose.yml:</p>
+            <p>Start the application stack defined in "docker-compose.yml":</p>
 
             <blockquote>docker-compose up -d</blockquote>
 
-            <p>Set the permissions and access for the php-apache container:</p>
+            <p>Set the permissions and access for the "php-apache" container:</p>
 
             <blockquote>
                 docker exec -it php-apache bash<br>

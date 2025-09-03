@@ -80,13 +80,13 @@ If your email sending starts without errors, everything is fine.
 cd <path to project>
 ```
 
-### 2. Start the application stack defined in docker-compose.yml
+### 2. Start the application stack defined in "docker-compose.yml"
 
 ```
 docker-compose up -d
 ```
 
-### 3. Set the permissions and access for the php-apache container
+### 3. Set the permissions and access for the "php-apache" container
 
 ```
 docker exec -it php-apache bash
