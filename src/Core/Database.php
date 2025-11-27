@@ -6,88 +6,81 @@ namespace App\Core;
 
 class Database
 {
-    protected string $mysqlHost;
-    protected int $mysqlPort;
-    protected string $mysqlUser;
-    protected string $mysqlPassword;
-    protected $mysqlLink;
-    protected string $mysqlDatabase;
-    protected string $mysqlNames;
+    protected string $dbHost;
+    protected int $dbPort;
+    protected string $dbUser;
+    protected string $dbPassword;
+    protected string $dbDatabase;
+    protected string $dbNames;
+    protected $pdo;
+    protected $stmt;
 
     public function __construct()
     {
         $database = require(DATABASE_FILE);
 
-        $this->mysqlHost = $database['db_host'];
-        $this->mysqlPort = $database['db_port'];
-        $this->mysqlUser = $database['db_user'];
-        $this->mysqlPassword = $database['db_password'];
-        $this->mysqlLink = null;
-        $this->mysqlDatabase = $database['db_database'];
-        $this->mysqlNames = $database['db_names'];
-
-        mysqli_report(MYSQLI_REPORT_OFF);
+        $this->dbHost = $database['db_host'];
+        $this->dbPort = $database['db_port'];
+        $this->dbUser = $database['db_user'];
+        $this->dbPassword = $database['db_password'];
+        $this->dbDatabase = $database['db_database'];
+        $this->dbNames = $database['db_names'];
+        $this->pdo = null;
+        $this->stmt = null;
     }
 
-    public function dbConnect(): void
+    public function connect(): void
     {
-        $this->mysqlLink = @mysqli_connect(
-            $this->mysqlHost,
-            $this->mysqlUser,
-            $this->mysqlPassword,
-            '',
-            $this->mysqlPort
-        ) or die('Could not connect to MySQL');
+        try {
+            $this->pdo = new \PDO(
+                'mysql:host=' . $this->dbHost . ':'
+                    . $this->dbPort . ';charset=' . $this->dbNames . ';'
+                    . 'dbname=' . $this->dbDatabase,
+                $this->dbUser,
+                $this->dbPassword
+            );
+        } catch (\PDOException $e) {
+            die('Could not connect to the database');
+        }
 
-        mysqli_select_db($this->mysqlLink, $this->mysqlDatabase)
-            or die('Could not choose the database');
-
-        mysqli_set_charset($this->mysqlLink, $this->mysqlNames);
+        $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
 
-    public function dbClose(): void
+    public function prepare(string $query)
     {
-        mysqli_close($this->mysqlLink)
-            or die('Could not close the connection to MySQL');
+        $this->stmt = $this->pdo->prepare($query);
+
+        return $this->stmt;
     }
 
-    public function dbQuery(string $query)
+    public function execute(array $array = array()): bool
     {
-        return mysqli_query($this->mysqlLink, $query);
+        return $this->stmt->execute($array);
     }
 
-    public function dbFetchArray($result): ?array
+    public function rowCount(): int
     {
-        return mysqli_fetch_assoc($result);
+        return $this->stmt->rowCount();
     }
 
-    public function dbNumberRows($result): int
+    public function lastInsertId(): int
     {
-        return mysqli_num_rows($result);
+        return (int) $this->pdo->lastInsertId();
     }
 
-    public function dbAffectedRows(): int
+    public function beginTransaction(): bool
     {
-        return mysqli_affected_rows($this->mysqlLink);
+        return $this->pdo->beginTransaction();
     }
 
-    public function dbInsertId(): int
+    public function commit(): bool
     {
-        return mysqli_insert_id($this->mysqlLink);
+        return $this->pdo->commit();
     }
 
-    public function dbStartTransaction(): bool
+    public function rollBack(): bool
     {
-        return $this->dbQuery('START TRANSACTION');
-    }
-
-    public function dbCommit(): bool
-    {
-        return $this->dbQuery('COMMIT');
-    }
-
-    public function dbRollback(): bool
-    {
-        return $this->dbQuery('ROLLBACK');
+        return $this->pdo->rollBack();
     }
 }

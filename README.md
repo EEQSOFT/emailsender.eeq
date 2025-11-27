@@ -90,10 +90,10 @@ docker-compose up -d
 
 ```
 docker exec -it php-apache bash
-cd /var/www/html/config
+cd /var/www
 ls -l
-chmod 666 /var/www/html/config/options.php
-chown -R www-data:www-data /var/www/html/config/options.php
+chmod 777 /var/www/html
+chown -R www-data:www-data /var/www/html
 ls -l
 exit
 ```

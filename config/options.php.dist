@@ -2,7 +2,7 @@
 
 return
 [
-    'version' => '1.0.1',
+    'version' => '1.1.0',
     'installed' => false,
     'registered' => false,
     'admin_email' => 'admin@domain.com',

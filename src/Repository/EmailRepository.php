@@ -10,18 +10,22 @@ class EmailRepository extends Repository
 {
     public function isEmailEmail(int $list, string $email): bool
     {
-        $query = $this->manager->createQuery(
-            "SELECT e.`email_id` FROM `email` e
+        $result = $this->manager->prepare(
+            'SELECT e.`email_id` FROM `email` e
             WHERE e.`list_id` = :list
-                AND e.`email_email_canonical` = ':emailCanonical'"
+                AND e.`email_email_canonical` = :emailCanonical'
         )
             ->setParameter('list', $list)
             ->setParameter('emailCanonical', strtolower($email))
-            ->getStrQuery();
+            ->getResult();
 
-        $result = $this->database->dbQuery($query);
+        $this->database->execute($result->params);
 
-        return (bool) $this->database->dbFetchArray($result);
+        foreach ($result->stmt as $row) {
+            return (bool) $row['email_id'];
+        }
+
+        return false;
     }
 
     public function addEmailData(
@@ -31,8 +35,8 @@ class EmailRepository extends Repository
         string $ip,
         string $date
     ): bool {
-        $query = $this->manager->createQuery(
-            "INSERT INTO `email` (
+        $result = $this->manager->prepare(
+            'INSERT INTO `email` (
                 `list_id`,
                 `email_name`,
                 `email_email`,
@@ -42,12 +46,12 @@ class EmailRepository extends Repository
             )
             VALUES (
                 :list,
-                ':name',
-                ':email',
-                ':emailCanonical',
-                ':ip',
-                ':date'
-            )"
+                :name,
+                :email,
+                :emailCanonical,
+                :ip,
+                :date
+            )'
         )
             ->setParameter('list', $list)
             ->setParameter('name', $name)
@@ -55,26 +59,26 @@ class EmailRepository extends Repository
             ->setParameter('email', $email)
             ->setParameter('ip', $ip)
             ->setParameter('date', $date)
-            ->getStrQuery();
+            ->getResult();
 
-        return $this->database->dbQuery($query);
+        return $this->database->execute($result->params);
     }
 
     public function getUnsubscribingEmailData(int $email): array
     {
         $array = array();
 
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'SELECT e.`email_id`, e.`email_name`, e.`email_email`,
                 e.`email_ip_added`, e.`email_date_added` FROM `email` e
             WHERE e.`email_id` = :email'
         )
             ->setParameter('email', $email)
-            ->getStrQuery();
+            ->getResult();
 
-        $result = $this->database->dbQuery($query);
+        $this->database->execute($result->params);
 
-        if (is_array($row = $this->database->dbFetchArray($result))) {
+        foreach ($result->stmt as $row) {
             $array['email_id'] = $row['email_id'];
             $array['email_name'] = $row['email_name'];
             $array['email_email'] = $row['email_email'];
@@ -90,20 +94,17 @@ class EmailRepository extends Repository
         $array = array();
         $i = 0;
 
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'SELECT e.`email_name`, e.`email_email`,
                 e.`email_ip_added`, e.`email_date_added` FROM `email` e
             WHERE e.`list_id` = :list'
         )
             ->setParameter('list', $list)
-            ->getStrQuery();
+            ->getResult();
 
-        $result = $this->database->dbQuery($query);
+        $this->database->execute($result->params);
 
-        while (
-            $result !== false
-            && is_array($row = $this->database->dbFetchArray($result))
-        ) {
+        foreach ($result->stmt as $row) {
             $array[++$i]['email_name'] = $row['email_name'];
             $array[$i]['email_email'] = $row['email_email'];
             $array[$i]['email_ip_added'] = $row['email_ip_added'];
@@ -120,7 +121,7 @@ class EmailRepository extends Repository
     ): array {
         $array = array();
 
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'SELECT e.`email_id`, e.`email_name`, e.`email_email`,
                 e.`email_ip_added`, e.`email_date_added` FROM `email` e
             WHERE e.`list_id` = :list AND e.`email_id` > :email
@@ -129,14 +130,11 @@ class EmailRepository extends Repository
             ->setParameter('list', $list)
             ->setParameter('email', $email)
             ->setParameter('limit', $listLimit)
-            ->getStrQuery();
+            ->getResult();
 
-        $result = $this->database->dbQuery($query);
+        $this->database->execute($result->params);
 
-        while (
-            $result !== false
-            && is_array($row = $this->database->dbFetchArray($result))
-        ) {
+        foreach ($result->stmt as $row) {
             $array[$row['email_id']]['email_name'] = $row['email_name'];
             $array[$row['email_id']]['email_email'] = $row['email_email'];
             $array[$row['email_id']]['email_ip_added'] =
@@ -156,10 +154,10 @@ class EmailRepository extends Repository
     ): array {
         $array = array();
 
-        $whereEmailCanonical = ($email === '') ? '' :
-            " AND e.`email_email_canonical` = ':emailCanonical'";
+        $whereEmailCanonical = ($email === '') ? " AND :emailCanonical = ''" :
+            ' AND e.`email_email_canonical` = :emailCanonical';
 
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'SELECT e.`email_id`, e.`email_name`, e.`email_email`
             FROM `email` e
             WHERE e.`list_id` = :list' . $whereEmailCanonical . '
@@ -169,14 +167,11 @@ class EmailRepository extends Repository
             ->setParameter('emailCanonical', strtolower($email))
             ->setParameter('start', ($level - 1) * $listLimit)
             ->setParameter('limit', $listLimit)
-            ->getStrQuery();
+            ->getResult();
 
-        $result = $this->database->dbQuery($query);
+        $this->database->execute($result->params);
 
-        while (
-            $result !== false
-            && is_array($row = $this->database->dbFetchArray($result))
-        ) {
+        foreach ($result->stmt as $row) {
             $array[$row['email_id']]['email_name'] = $row['email_name'];
             $array[$row['email_id']]['email_email'] = $row['email_email'];
         }
@@ -186,20 +181,20 @@ class EmailRepository extends Repository
 
     public function getEmailCount(int $list, string $email): int
     {
-        $whereEmailCanonical = ($email === '') ? '' :
-            " AND e.`email_email_canonical` = ':emailCanonical'";
+        $whereEmailCanonical = ($email === '') ? " AND :emailCanonical = ''" :
+            ' AND e.`email_email_canonical` = :emailCanonical';
 
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'SELECT COUNT(*) AS `count` FROM `email` e
             WHERE e.`list_id` = :list' . $whereEmailCanonical
         )
             ->setParameter('list', $list)
             ->setParameter('emailCanonical', strtolower($email))
-            ->getStrQuery();
+            ->getResult();
 
-        $result = $this->database->dbQuery($query);
+        $this->database->execute($result->params);
 
-        if (is_array($row = $this->database->dbFetchArray($result))) {
+        foreach ($result->stmt as $row) {
             return (int) $row['count'];
         }
 
@@ -208,17 +203,36 @@ class EmailRepository extends Repository
 
     public function getSendingEmailCount(int $list, int $email): int
     {
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'SELECT COUNT(*) AS `count` FROM `email` e
             WHERE e.`list_id` = :list AND e.`email_id` > :email'
         )
             ->setParameter('list', $list)
             ->setParameter('email', $email)
-            ->getStrQuery();
+            ->getResult();
 
-        $result = $this->database->dbQuery($query);
+        $this->database->execute($result->params);
 
-        if (is_array($row = $this->database->dbFetchArray($result))) {
+        foreach ($result->stmt as $row) {
+            return (int) $row['count'];
+        }
+
+        return 0;
+    }
+
+    public function getIpDateEmailCount(string $ip, string $date): int
+    {
+        $result = $this->manager->prepare(
+            'SELECT COUNT(*) AS `count` FROM `email` e
+            WHERE e.`email_ip_added` = :ip AND e.`email_date_added` >= :date'
+        )
+            ->setParameter('ip', $ip)
+            ->setParameter('date', $date)
+            ->getResult();
+
+        $this->database->execute($result->params);
+
+        foreach ($result->stmt as $row) {
             return (int) $row['count'];
         }
 
@@ -227,12 +241,12 @@ class EmailRepository extends Repository
 
     public function deleteEmailData(int $email): bool
     {
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'DELETE FROM `email` WHERE `email_id` = :email'
         )
             ->setParameter('email', $email)
-            ->getStrQuery();
+            ->getResult();
 
-        return $this->database->dbQuery($query);
+        return $this->database->execute($result->params);
     }
 }

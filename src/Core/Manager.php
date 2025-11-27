@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core;
 
-use App\Core\{Database, Query, Repository};
+use App\Core\{Database, Prepare, Repository};
 
 class Manager
 {
@@ -23,8 +23,8 @@ class Manager
         return $this->repository[$class];
     }
 
-    public function createQuery(string $query): Query
+    public function prepare(string $query): Prepare
     {
-        return new Query($query);
+        return new Prepare($this->database, $query);
     }
 }

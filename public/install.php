@@ -36,11 +36,22 @@ if (!chmod(OPTIONS_FILE, octdec('666'))) {
     exit;
 }
 
-$db->dbConnect();
+$db->connect();
 
 $or = $rm->getRepository(OptionRepository::class);
 
-$optionData = $or->getOptionData();
+$stmt = $db->prepare("SHOW TABLES LIKE 'option'");
+$ok = $db->execute();
+
+foreach ($stmt as $array) {
+    break;
+}
+
+if ($ok && !empty($array)) {
+    $optionData = $or->getOptionData();
+} else {
+    $optionData = array();
+}
 
 if ($options['installed']) {
 ?>
@@ -68,20 +79,133 @@ if ($options['installed']) {
     && iv($options['version']) > iv($optionData['option_version'])
 ) {
     if (
-        iv($optionData['option_version']) >= iv('0.1.0')
-        && iv($optionData['option_version']) < iv('1.0.0')
-    ) {
-        if ($or->setOptionVersion('1.0.0')) {
-            $optionData['option_version'] = '1.0.0';
-        }
-    }
-
-    if (
         iv($optionData['option_version']) >= iv('1.0.0')
         && iv($optionData['option_version']) < iv('1.0.1')
     ) {
         if ($or->setOptionVersion('1.0.1')) {
             $optionData['option_version'] = '1.0.1';
+        }
+    }
+
+    if (
+        iv($optionData['option_version']) >= iv('1.0.1')
+        && iv($optionData['option_version']) < iv('1.1.0')
+    ) {
+        if ($or->setOptionVersion('1.1.0')) {
+            $optionData['option_version'] = '1.1.0';
+
+            $db->prepare('SET @OLD_SQL_MODE=@@SQL_MODE');
+            $db->execute();
+
+            $db->prepare("SET SQL_MODE=''");
+            $db->execute();
+
+            $db->prepare(
+                "UPDATE IGNORE `user`
+                SET `user_date_added` = '1970-01-01 00:00:00'
+                WHERE `user_date_added` = '0000-00-00 00:00:00'"
+            );
+
+            $db->execute();
+
+            $db->prepare(
+                "UPDATE IGNORE `user`
+                SET `user_date_updated` = '1970-01-01 00:00:00'
+                WHERE `user_date_updated` = '0000-00-00 00:00:00'"
+            );
+
+            $db->execute();
+
+            $db->prepare(
+                "UPDATE IGNORE `user`
+                SET `user_date_loged` = '1970-01-01 00:00:00'
+                WHERE `user_date_loged` = '0000-00-00 00:00:00'"
+            );
+
+            $db->execute();
+
+            $db->prepare(
+                "UPDATE IGNORE `email`
+                SET `email_date_added` = '1970-01-01 00:00:00'
+                WHERE `email_date_added` = '0000-00-00 00:00:00'"
+            );
+
+            $db->execute();
+
+            $db->prepare('SET SQL_MODE=@OLD_SQL_MODE');
+            $db->execute();
+
+            $db->prepare(
+                "ALTER TABLE `user`
+                MODIFY `user_date_added`
+                    DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00',
+                MODIFY `user_date_updated`
+                    DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00',
+                MODIFY `user_date_loged`
+                    DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00'"
+            );
+
+            $db->execute();
+
+            $db->prepare(
+                "ALTER TABLE `email`
+                MODIFY `email_date_added`
+                    DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00'"
+            );
+
+            $db->execute();
+
+            $stmt = $db->prepare(
+                "SELECT COUNT(*)
+                FROM INFORMATION_SCHEMA.STATISTICS
+                WHERE table_schema = DATABASE()
+                    AND table_name = 'email'
+                    AND index_name = 'email_ip_added'"
+            );
+
+            $stmt->execute();
+
+            $exists = (bool) $stmt->fetchColumn();
+
+            if ($exists) {
+                $db->prepare(
+                    'ALTER TABLE `email`
+                    DROP INDEX `email_ip_added`'
+                )->execute();
+            }
+
+            $db->prepare(
+                'ALTER TABLE `email`
+                ADD KEY `email_ip_added` (`email_ip_added`)'
+            );
+
+            $db->execute();
+
+            $stmt = $db->prepare(
+                "SELECT COUNT(*)
+                FROM INFORMATION_SCHEMA.STATISTICS
+                WHERE table_schema = DATABASE()
+                    AND table_name = 'email'
+                    AND index_name = 'email_date_added'"
+            );
+
+            $stmt->execute();
+
+            $exists = (bool) $stmt->fetchColumn();
+
+            if ($exists) {
+                $db->prepare(
+                    'ALTER TABLE `email`
+                    DROP INDEX `email_date_added`'
+                )->execute();
+            }
+
+            $db->prepare(
+                'ALTER TABLE `email`
+                ADD KEY `email_date_added` (`email_date_added`)'
+            );
+
+            $db->execute();
         }
     }
 
@@ -163,19 +287,24 @@ if ($options['installed']) {
     exit;
 }
 
-$db->dbQuery("SET SQL_MODE = 'ALLOW_INVALID_DATES'");
+$db->prepare("SET SQL_MODE = 'ALLOW_INVALID_DATES'");
+$db->execute();
 
-$db->dbQuery("SET NAMES '" . $database['db_names'] . "'");
+$db->prepare("SET NAMES '" . $database['db_names'] . "'");
+$db->execute();
 
-$db->dbQuery(
+$db->prepare(
     'CREATE DATABASE IF NOT EXISTS `' . $database['db_database'] . '`
         DEFAULT CHARACTER SET ' . $database['db_names'] . '
         COLLATE ' . $database['db_collate']
 );
 
-$db->dbQuery('USE `' . $database['db_database'] . '`');
+$db->execute();
 
-$db->dbQuery(
+$db->prepare('USE `' . $database['db_database'] . '`');
+$db->execute();
+
+$db->prepare(
     "CREATE TABLE IF NOT EXISTS `option` (
         `option_version` VARCHAR(11) NOT NULL DEFAULT '"
             . $options['version'] . "',
@@ -185,13 +314,15 @@ $db->dbQuery(
         . $database['db_collate']
 );
 
-$query = $rm->createQuery(
+$db->execute();
+
+$result = $rm->prepare(
     'INSERT INTO `option` () VALUES ()'
-)->getStrQuery();
+)->getResult();
 
-$db->dbQuery($query);
+$db->execute($result->params);
 
-$db->dbQuery(
+$db->prepare(
     "CREATE TABLE IF NOT EXISTS `user` (
         `user_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
         `user_admin` TINYINT NOT NULL DEFAULT 0,
@@ -203,11 +334,11 @@ $db->dbQuery(
         `user_password` VARCHAR(255) NOT NULL DEFAULT '',
         `user_key` VARCHAR(255) NOT NULL DEFAULT '',
         `user_ip_added` VARCHAR(15) NOT NULL DEFAULT '',
-        `user_date_added` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+        `user_date_added` DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00',
         `user_ip_updated` VARCHAR(15) NOT NULL DEFAULT '',
-        `user_date_updated` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+        `user_date_updated` DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00',
         `user_ip_loged` VARCHAR(15) NOT NULL DEFAULT '',
-        `user_date_loged` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+        `user_date_loged` DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00',
         PRIMARY KEY (`user_id`),
         UNIQUE KEY `unique_login_canonical` (`user_login_canonical`),
         UNIQUE KEY `unique_email_canonical` (`user_email_canonical`),
@@ -230,7 +361,9 @@ $db->dbQuery(
         . $database['db_collate']
 );
 
-$db->dbQuery(
+$db->execute();
+
+$db->prepare(
     "CREATE TABLE IF NOT EXISTS `list` (
         `list_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
         `list_name` VARCHAR(100) NOT NULL DEFAULT '',
@@ -241,7 +374,9 @@ $db->dbQuery(
         . $database['db_collate']
 );
 
-$db->dbQuery(
+$db->execute();
+
+$db->prepare(
     "CREATE TABLE IF NOT EXISTS `email` (
         `email_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
         `list_id` INT UNSIGNED NOT NULL DEFAULT 0,
@@ -249,20 +384,22 @@ $db->dbQuery(
         `email_email` VARCHAR(100) NOT NULL DEFAULT '',
         `email_email_canonical` VARCHAR(100) NOT NULL DEFAULT '',
         `email_ip_added` VARCHAR(15) NOT NULL DEFAULT '',
-        `email_date_added` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+        `email_date_added` DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00',
         PRIMARY KEY (`email_id`),
     --  KEY `email_id` (`email_id`),
     --  KEY `list_id` (`list_id`),
     --  KEY `email_name` (`email_name`),
     --  KEY `email_email` (`email_email`),
-        KEY `email_email_canonical` (`email_email_canonical`)
-    --  KEY `email_ip_added` (`email_ip_added`),
-    --  KEY `email_date_added` (`email_date_added`)
+        KEY `email_email_canonical` (`email_email_canonical`),
+        KEY `email_ip_added` (`email_ip_added`),
+        KEY `email_date_added` (`email_date_added`)
     ) ENGINE=InnoDB DEFAULT CHARSET=" . $database['db_names'] . ' COLLATE='
         . $database['db_collate']
 );
 
-$db->dbQuery(
+$db->execute();
+
+$db->prepare(
     "CREATE TABLE IF NOT EXISTS `text` (
         `text_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
         `text_subject` VARCHAR(100) NOT NULL DEFAULT '',
@@ -275,7 +412,9 @@ $db->dbQuery(
         . $database['db_collate']
 );
 
-$db->dbQuery(
+$db->execute();
+
+$db->prepare(
     'CREATE TABLE IF NOT EXISTS `send` (
         `list_id` INT UNSIGNED NOT NULL DEFAULT 0,
         `email_id` INT UNSIGNED NOT NULL DEFAULT 0,
@@ -285,16 +424,20 @@ $db->dbQuery(
         . $database['db_collate']
 );
 
-$query = $rm->createQuery(
+$db->execute();
+
+$result = $rm->prepare(
     'INSERT INTO `send` () VALUES ()'
-)->getStrQuery();
+)->getResult();
 
-$db->dbQuery($query);
+$db->execute($result->params);
 
-$db->dbQuery(
+$db->prepare(
     'ALTER TABLE `email`
         ADD CONSTRAINT `email_ibfk_1` FOREIGN KEY (`list_id`) REFERENCES `list` (`list_id`)'
 );
+
+$db->execute();
 
 $cache->cacheFile(
     OPTIONS_FILE,
