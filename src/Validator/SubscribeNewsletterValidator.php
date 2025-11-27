@@ -25,9 +25,27 @@ class SubscribeNewsletterValidator extends Error
         int $list,
         string $name,
         string $email,
+        string $ip,
         string $token
     ): void {
         $er = $this->rm->getRepository(EmailRepository::class);
+
+        $fiveMinutesAgo = date( 'Y-m-d H:i:s', time() - 5 * 60 );
+        $oneDayAgo = date( 'Y-m-d H:i:s', time() - 24 * 60 * 60 );
+
+        if ($er->getIpDateEmailCount($ip, $fiveMinutesAgo) >= 1) {
+            $this->addError(
+                'Please wait 5 minutes before adding another email.'
+            );
+
+            return;
+        }
+
+        if ($er->getIpDateEmailCount($ip, $oneDayAgo) >= 10) {
+            $this->addError('You have exceeded the limit of emails added.');
+
+            return;
+        }
 
         if (strlen($name) < 1) {
             $this->addError('Your name can be at least 1 character long.');

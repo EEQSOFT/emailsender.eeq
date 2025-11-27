@@ -10,13 +10,13 @@ class SendRepository extends Repository
 {
     public function setSendEmail(int $email): bool
     {
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'UPDATE `send` s SET s.`email_id` = :email'
         )
             ->setParameter('email', $email)
-            ->getStrQuery();
+            ->getResult();
 
-        return $this->database->dbQuery($query);
+        return $this->database->execute($result->params);
     }
 
     public function setSendData(
@@ -25,7 +25,7 @@ class SendRepository extends Repository
         int $text,
         int $count
     ): bool {
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'UPDATE `send` s
             SET s.`list_id` = :list, s.`email_id` = :email,
                 s.`text_id` = :text, s.`send_count` = :count'
@@ -34,22 +34,22 @@ class SendRepository extends Repository
             ->setParameter('email', $email)
             ->setParameter('text', $text)
             ->setParameter('count', $count)
-            ->getStrQuery();
+            ->getResult();
 
-        return $this->database->dbQuery($query);
+        return $this->database->execute($result->params);
     }
 
     public function getSendData(): array
     {
         $array = array();
 
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'SELECT * FROM `send`'
-        )->getStrQuery();
+        )->getResult();
 
-        $result = $this->database->dbQuery($query);
+        $this->database->execute($result->params);
 
-        if (is_array($row = $this->database->dbFetchArray($result))) {
+        foreach ($result->stmt as $row) {
             $array['list_id'] = (int) $row['list_id'];
             $array['email_id'] = (int) $row['email_id'];
             $array['text_id'] = (int) $row['text_id'];

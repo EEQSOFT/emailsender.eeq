@@ -10,15 +10,15 @@ class TextRepository extends Repository
 {
     public function addTextData(string $subject, string $message): bool
     {
-        $query = $this->manager->createQuery(
-            "INSERT INTO `text` (`text_subject`, `text_message`)
-            VALUES (':subject', ':message')"
+        $result = $this->manager->prepare(
+            'INSERT INTO `text` (`text_subject`, `text_message`)
+            VALUES (:subject, :message)'
         )
             ->setParameter('subject', $subject)
             ->setParameter('message', $message)
-            ->getStrQuery();
+            ->getResult();
 
-        return $this->database->dbQuery($query);
+        return $this->database->execute($result->params);
     }
 
     public function setTextData(
@@ -26,33 +26,33 @@ class TextRepository extends Repository
         string $subject,
         string $message
     ): bool {
-        $query = $this->manager->createQuery(
-            "UPDATE `text` t
-            SET t.`text_subject` = ':subject', t.`text_message` = ':message'
-            WHERE t.`text_id` = :text"
+        $result = $this->manager->prepare(
+            'UPDATE `text` t
+            SET t.`text_subject` = :subject, t.`text_message` = :message
+            WHERE t.`text_id` = :text'
         )
             ->setParameter('subject', $subject)
             ->setParameter('message', $message)
             ->setParameter('text', $text)
-            ->getStrQuery();
+            ->getResult();
 
-        return $this->database->dbQuery($query);
+        return $this->database->execute($result->params);
     }
 
     public function getTextData(int $text): array
     {
         $array = array();
 
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'SELECT t.`text_subject`, t.`text_message` FROM `text` t
             WHERE t.`text_id` = :text'
         )
             ->setParameter('text', $text)
-            ->getStrQuery();
+            ->getResult();
 
-        $result = $this->database->dbQuery($query);
+        $this->database->execute($result->params);
 
-        if (is_array($row = $this->database->dbFetchArray($result))) {
+        foreach ($result->stmt as $row) {
             $array['text_subject'] = $row['text_subject'];
             $array['text_message'] = $row['text_message'];
         }
@@ -64,21 +64,18 @@ class TextRepository extends Repository
     {
         $array = array();
 
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'SELECT t.`text_id`, t.`text_subject` FROM `text` t
             ORDER BY t.`text_subject` ASC, t.`text_id` DESC
             LIMIT :start, :limit'
         )
             ->setParameter('start', ($level - 1) * $listLimit)
             ->setParameter('limit', $listLimit)
-            ->getStrQuery();
+            ->getResult();
 
-        $result = $this->database->dbQuery($query);
+        $this->database->execute($result->params);
 
-        while (
-            $result !== false
-            && is_array($row = $this->database->dbFetchArray($result))
-        ) {
+        foreach ($result->stmt as $row) {
             $array[$row['text_id']]['text_subject'] = $row['text_subject'];
         }
 
@@ -87,13 +84,13 @@ class TextRepository extends Repository
 
     public function getTextCount(): int
     {
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'SELECT COUNT(*) AS `count` FROM `text`'
-        )->getStrQuery();
+        )->getResult();
 
-        $result = $this->database->dbQuery($query);
+        $this->database->execute($result->params);
 
-        if (is_array($row = $this->database->dbFetchArray($result))) {
+        foreach ($result->stmt as $row) {
             return (int) $row['count'];
         }
 
@@ -102,12 +99,12 @@ class TextRepository extends Repository
 
     public function deleteTextData(int $text): bool
     {
-        $query = $this->manager->createQuery(
+        $result = $this->manager->prepare(
             'DELETE FROM `text` WHERE `text_id` = :text'
         )
             ->setParameter('text', $text)
-            ->getStrQuery();
+            ->getResult();
 
-        return $this->database->dbQuery($query);
+        return $this->database->execute($result->params);
     }
 }

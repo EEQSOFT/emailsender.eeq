@@ -36,6 +36,17 @@
                 overflow-x: auto;
             }
 
+            code {
+                white-space: pre;
+            }
+
+            .code {
+                padding: 0 15px;
+                border-radius: 5px;
+                background: #eee;
+                overflow-x: auto;
+            }
+
             .container {
                 max-width: 770px;
                 margin-left: auto;
@@ -343,10 +354,10 @@
 
             <blockquote>
                 docker exec -it php-apache bash<br>
-                cd /var/www/html/config<br>
+                cd /var/www<br>
                 ls -l<br>
-                chmod 666 /var/www/html/config/options.php<br>
-                chown -R www-data:www-data /var/www/html/config/options.php<br>
+                chmod 777 /var/www/html<br>
+                chown -R www-data:www-data /var/www/html<br>
                 ls -l<br>
                 exit
             </blockquote>
@@ -382,13 +393,22 @@
 
             <h2>5. Change Logs</h2>
 
+            <h3>v1.1.0 - 25 November 2025</h3>
+
+            <p>
+                - Add: Simple anti-spam added<br>
+                - Update: License changed to MIT<br>
+                - Update: Mysqli to PDO migration<br>
+                - Fix: Database security fixed
+            </p>
+
             <h3>v1.0.1 - 13 June 2023</h3>
 
             <p>- Fix: Standard License changed</p>
 
             <h3>v1.0.0 - 29 May 2023</h3>
 
-            <p>- Initial Release</p>
+            <p>- Initial release</p>
         </div>
     </body>
 </html>

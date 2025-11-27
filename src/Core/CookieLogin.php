@@ -33,17 +33,17 @@ class CookieLogin extends Controller
         $userData = $this->getUserData($cookie[0] ?? '', $cookie[1] ?? '');
 
         if ($userData['user_active'] ?? false) {
-            $query = $this->manager->createQuery(
-                "UPDATE `user` u
-                SET u.`user_ip_loged` = ':ip', u.`user_date_loged` = ':date'
-                WHERE u.`user_id` = :user"
+            $result = $this->manager->prepare(
+                'UPDATE `user` u
+                SET u.`user_ip_loged` = :ip, u.`user_date_loged` = :date
+                WHERE u.`user_id` = :user'
             )
                 ->setParameter('ip', $this->config->getRemoteAddress())
                 ->setParameter('date', $this->config->getDateTimeNow())
                 ->setParameter('user', $userData['user_id'])
-                ->getStrQuery();
+                ->getResult();
 
-            $userLoged = $this->database->dbQuery($query);
+            $userLoged = $this->database->execute($result->params);
 
             if ($userLoged) {
                 $_SESSION['id'] = $userData['user_id'];
@@ -57,19 +57,19 @@ class CookieLogin extends Controller
     {
         $arrayResult = array();
 
-        $query = $this->manager->createQuery(
-            "SELECT u.`user_id`, u.`user_admin`, u.`user_active`,
+        $result = $this->manager->prepare(
+            'SELECT u.`user_id`, u.`user_admin`, u.`user_active`,
                 u.`user_login` FROM `user` u
-            WHERE u.`user_login_canonical` = ':loginCanonical'
-                AND u.`user_password` = ':password'"
+            WHERE u.`user_login_canonical` = :loginCanonical
+                AND u.`user_password` = :password'
         )
             ->setParameter('loginCanonical', strtolower($login))
             ->setParameter('password', $password)
-            ->getStrQuery();
+            ->getResult();
 
-        $result = $this->database->dbQuery($query);
+        $this->database->execute($result->params);
 
-        if (is_array($row = $this->database->dbFetchArray($result))) {
+        foreach ($result->stmt as $row) {
             $arrayResult['user_id'] = (int) $row['user_id'];
             $arrayResult['user_admin'] = (bool) $row['user_admin'];
             $arrayResult['user_active'] = (bool) $row['user_active'];

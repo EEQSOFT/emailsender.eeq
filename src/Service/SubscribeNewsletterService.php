@@ -54,6 +54,7 @@ class SubscribeNewsletterService
                 $list,
                 $name,
                 $email,
+                $this->config->getRemoteAddress(),
                 $token
             );
 

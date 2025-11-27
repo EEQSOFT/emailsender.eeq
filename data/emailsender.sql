@@ -6,7 +6,7 @@ CREATE DATABASE IF NOT EXISTS `emailsender` DEFAULT CHARACTER SET utf8mb4 COLLAT
 USE `emailsender`;
 
 CREATE TABLE IF NOT EXISTS `option` (
-    `option_version` VARCHAR(11) NOT NULL DEFAULT '0.1.0',
+    `option_version` VARCHAR(11) NOT NULL DEFAULT '1.1.0',
     `option_installed` TINYINT NOT NULL DEFAULT 1,
     `option_registered` TINYINT NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -24,11 +24,11 @@ CREATE TABLE IF NOT EXISTS `user` (
     `user_password` VARCHAR(255) NOT NULL DEFAULT '',
     `user_key` VARCHAR(255) NOT NULL DEFAULT '',
     `user_ip_added` VARCHAR(15) NOT NULL DEFAULT '',
-    `user_date_added` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `user_date_added` DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00',
     `user_ip_updated` VARCHAR(15) NOT NULL DEFAULT '',
-    `user_date_updated` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `user_date_updated` DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00',
     `user_ip_loged` VARCHAR(15) NOT NULL DEFAULT '',
-    `user_date_loged` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `user_date_loged` DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00',
     PRIMARY KEY (`user_id`),
     UNIQUE KEY `unique_login_canonical` (`user_login_canonical`),
     UNIQUE KEY `unique_email_canonical` (`user_email_canonical`),
@@ -64,15 +64,15 @@ CREATE TABLE IF NOT EXISTS `email` (
     `email_email` VARCHAR(100) NOT NULL DEFAULT '',
     `email_email_canonical` VARCHAR(100) NOT NULL DEFAULT '',
     `email_ip_added` VARCHAR(15) NOT NULL DEFAULT '',
-    `email_date_added` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `email_date_added` DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00',
     PRIMARY KEY (`email_id`),
 --  KEY `email_id` (`email_id`),
 --  KEY `list_id` (`list_id`),
 --  KEY `email_name` (`email_name`),
 --  KEY `email_email` (`email_email`),
-    KEY `email_email_canonical` (`email_email_canonical`)
---  KEY `email_ip_added` (`email_ip_added`),
---  KEY `email_date_added` (`email_date_added`)
+    KEY `email_email_canonical` (`email_email_canonical`),
+    KEY `email_ip_added` (`email_ip_added`),
+    KEY `email_date_added` (`email_date_added`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `text` (

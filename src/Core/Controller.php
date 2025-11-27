@@ -17,7 +17,7 @@ class Controller
             $this->database = new Database();
             $this->manager = new Manager($this->database);
 
-            $this->database->dbConnect();
+            $this->database->connect();
         }
     }
 
