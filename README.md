@@ -1,4 +1,4 @@
-# EmailSender with Newsletter
+# Email Sender with Newsletter
 
 ## Setup/Installation
 
@@ -113,6 +113,6 @@ docker-compose down
 
 ## Information
 
-Copyright (c) 2024 EEQSOFT
+Copyright (c) 2024-2026 EEQSOFT
 
-https://emailsender.eeqsoft.com
+https://www.eeqsoft.com/email-sender
