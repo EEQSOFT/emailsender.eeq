@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\Html;
-use App\Controller\LogInUserController;
-use App\Core\{Config, Email, Token};
+use App\Core\{Config, Email, Manager, Token};
 use App\Repository\UserRepository;
 use App\Validator\LogInUserValidator;
 
 class LogInUserService
 {
-    protected LogInUserController $logInUserController;
+    protected array $rtmp;
+    protected Manager $rm;
     protected Config $config;
     protected Email $mail;
     protected Html $html;
@@ -20,14 +20,16 @@ class LogInUserService
     protected LogInUserValidator $logInUserValidator;
 
     public function __construct(
-        LogInUserController $logInUserController,
+        array $rtmp,
+        Manager $rm,
         Config $config,
         Email $mail,
         Html $html,
         Token $csrfToken,
         LogInUserValidator $logInUserValidator
     ) {
-        $this->logInUserController = $logInUserController;
+        $this->rtmp = $rtmp;
+        $this->rm = $rm;
         $this->config = $config;
         $this->mail = $mail;
         $this->html = $html;
@@ -42,8 +44,7 @@ class LogInUserService
         bool $submit,
         string $token
     ): array {
-        $rm = $this->logInUserController->getManager();
-        $ur = $rm->getRepository(UserRepository::class);
+        $ur = $this->rm->getRepository(UserRepository::class);
 
         if ($submit) {
             $this->logInUserValidator->validate($login, $password, $token);
@@ -109,8 +110,7 @@ class LogInUserService
                         );
                     }
 
-                    return $this->logInUserController
-                        ->redirectToRoute('main_page');
+                    return $this->rtmp;
                 } else {
                     $this->logInUserValidator->addError(
                         'The account with the given login and password '

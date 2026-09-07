@@ -20,7 +20,8 @@ class LogInUserController extends Controller
         $logInUserValidator = new LogInUserValidator($csrfToken);
 
         $logInUserService = new LogInUserService(
-            $this,
+            $this->redirectToRoute('main_page'),
+            $this->getManager(),
             $config,
             $mail,
             $html,

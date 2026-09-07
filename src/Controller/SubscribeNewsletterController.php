@@ -25,7 +25,7 @@ class SubscribeNewsletterController extends Controller
         );
 
         $subscribeNewsletterService = new SubscribeNewsletterService(
-            $this,
+            $this->getManager(),
             $config,
             $html,
             $csrfToken,

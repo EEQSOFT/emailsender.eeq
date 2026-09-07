@@ -19,7 +19,7 @@ class WriteTextController extends Controller
         $writeTextValidator = new WriteTextValidator($csrfToken);
 
         $writeTextService = new WriteTextService(
-            $this,
+            $this->getManager(),
             $config,
             $html,
             $csrfToken,

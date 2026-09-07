@@ -5,27 +5,26 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\Html;
-use App\Controller\ImportEmailsController;
-use App\Core\Token;
+use App\Core\{Manager, Token};
 use App\Repository\{EmailRepository, ListRepository};
 use App\Validator\{ImportEmailsValidator, SelectEmailListValidator};
 
 class ImportEmailsService
 {
-    protected ImportEmailsController $importEmailsController;
+    protected Manager $rm;
     protected Html $html;
     protected Token $csrfToken;
     protected SelectEmailListValidator $selectEmailListValidator;
     protected ImportEmailsValidator $importEmailsValidator;
 
     public function __construct(
-        ImportEmailsController $importEmailsController,
+        Manager $rm,
         Html $html,
         Token $csrfToken,
         SelectEmailListValidator $selectEmailListValidator,
         ImportEmailsValidator $importEmailsValidator
     ) {
-        $this->importEmailsController = $importEmailsController;
+        $this->rm = $rm;
         $this->html = $html;
         $this->csrfToken = $csrfToken;
         $this->selectEmailListValidator = $selectEmailListValidator;
@@ -41,9 +40,8 @@ class ImportEmailsService
         string $temporaryFile,
         int $fileError
     ): array {
-        $rm = $this->importEmailsController->getManager();
-        $lr = $rm->getRepository(ListRepository::class);
-        $er = $rm->getRepository(EmailRepository::class);
+        $lr = $this->rm->getRepository(ListRepository::class);
+        $er = $this->rm->getRepository(EmailRepository::class);
 
         if ($submit) {
             $this->selectEmailListValidator->validate($list, $token);

@@ -11,7 +11,7 @@ class MainPageController
         return array(
             'content' => 'main-page/main-page.php',
             'activeMenu' => 'main-page',
-            'title' => 'EmailSender with Newsletter'
+            'title' => 'EEQ EmailSender with Newsletter'
         );
     }
 }

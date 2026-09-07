@@ -5,25 +5,24 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\Html;
-use App\Controller\EditTextController;
-use App\Core\Token;
+use App\Core\{Manager, Token};
 use App\Repository\TextRepository;
 use App\Validator\EditTextValidator;
 
 class EditTextService
 {
-    protected EditTextController $editTextController;
+    protected Manager $rm;
     protected Html $html;
     protected Token $csrfToken;
     protected EditTextValidator $editTextValidator;
 
     public function __construct(
-        EditTextController $editTextController,
+        Manager $rm,
         Html $html,
         Token $csrfToken,
         EditTextValidator $editTextValidator
     ) {
-        $this->editTextController = $editTextController;
+        $this->rm = $rm;
         $this->html = $html;
         $this->csrfToken = $csrfToken;
         $this->editTextValidator = $editTextValidator;
@@ -36,8 +35,7 @@ class EditTextService
         string $token,
         int $edit
     ): array {
-        $rm = $this->editTextController->getManager();
-        $tr = $rm->getRepository(TextRepository::class);
+        $tr = $this->rm->getRepository(TextRepository::class);
 
         if ($submit) {
             $this->editTextValidator->validate($subject, $message, $token);

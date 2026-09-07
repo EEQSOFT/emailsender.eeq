@@ -24,7 +24,7 @@ class AddDeleteUserController extends Controller
         );
 
         $addDeleteUserService = new AddDeleteUserService(
-            $this,
+            $this->getManager(),
             $config,
             $mail,
             $html,

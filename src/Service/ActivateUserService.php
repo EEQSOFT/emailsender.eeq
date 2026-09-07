@@ -5,26 +5,25 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\Key;
-use App\Controller\ActivateUserController;
+use App\Core\Manager;
 use App\Repository\UserRepository;
 
 class ActivateUserService
 {
-    protected ActivateUserController $activateUserController;
+    protected Manager $rm;
     protected Key $key;
 
     public function __construct(
-        ActivateUserController $activateUserController,
+        Manager $rm,
         Key $key
     ) {
-        $this->activateUserController = $activateUserController;
+        $this->rm = $rm;
         $this->key = $key;
     }
 
     public function activateUserAction(string $user, string $code): array
     {
-        $rm = $this->activateUserController->getManager();
-        $ur = $rm->getRepository(UserRepository::class);
+        $ur = $this->rm->getRepository(UserRepository::class);
 
         if ($user !== '' && $code !== '') {
             $activationUserData = $ur->getActivationUserData($user);

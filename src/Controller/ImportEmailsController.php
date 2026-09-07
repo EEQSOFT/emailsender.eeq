@@ -23,7 +23,7 @@ class ImportEmailsController extends Controller
         $importEmailsValidator = new ImportEmailsValidator($csrfToken);
 
         $importEmailsService = new ImportEmailsService(
-            $this,
+            $this->getManager(),
             $html,
             $csrfToken,
             $selectEmailListValidator,

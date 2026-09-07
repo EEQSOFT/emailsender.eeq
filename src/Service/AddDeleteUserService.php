@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\{Html, Key};
-use App\Controller\AddDeleteUserController;
-use App\Core\{Config, Email, Token};
+use App\Core\{Config, Email, Manager, Token};
 use App\Repository\UserRepository;
 use App\Validator\AddUserValidator;
 
 class AddDeleteUserService
 {
-    protected AddDeleteUserController $addDeleteUserController;
+    protected Manager $rm;
     protected Config $config;
     protected Email $mail;
     protected Html $html;
@@ -21,7 +20,7 @@ class AddDeleteUserService
     protected AddUserValidator $addUserValidator;
 
     public function __construct(
-        AddDeleteUserController $addDeleteUserController,
+        Manager $rm,
         Config $config,
         Email $mail,
         Html $html,
@@ -29,7 +28,7 @@ class AddDeleteUserService
         Token $csrfToken,
         AddUserValidator $addUserValidator
     ) {
-        $this->addDeleteUserController = $addDeleteUserController;
+        $this->rm = $rm;
         $this->config = $config;
         $this->mail = $mail;
         $this->html = $html;
@@ -51,8 +50,7 @@ class AddDeleteUserService
         int $delete,
         int $sessionId
     ): array {
-        $rm = $this->addDeleteUserController->getManager();
-        $ur = $rm->getRepository(UserRepository::class);
+        $ur = $this->rm->getRepository(UserRepository::class);
 
         if ($submit) {
             $this->addUserValidator->validate(

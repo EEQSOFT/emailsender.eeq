@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\{Cron, Html};
-use App\Controller\SendEmailsController;
-use App\Core\Token;
+use App\Core\{Manager, Token};
 use App\Repository\{
     EmailRepository,
     ListRepository,
@@ -21,7 +20,7 @@ use App\Validator\{
 
 class SendEmailsService
 {
-    protected SendEmailsController $sendEmailsController;
+    protected Manager $rm;
     protected Cron $cron;
     protected Html $html;
     protected Token $csrfToken;
@@ -30,7 +29,7 @@ class SendEmailsService
     protected SendEmailsValidator $sendEmailsValidator;
 
     public function __construct(
-        SendEmailsController $sendEmailsController,
+        Manager $rm,
         Cron $cron,
         Html $html,
         Token $csrfToken,
@@ -38,7 +37,7 @@ class SendEmailsService
         SelectTextValidator $selectTextValidator,
         SendEmailsValidator $sendEmailsValidator
     ) {
-        $this->sendEmailsController = $sendEmailsController;
+        $this->rm = $rm;
         $this->cron = $cron;
         $this->html = $html;
         $this->csrfToken = $csrfToken;
@@ -56,11 +55,10 @@ class SendEmailsService
         bool $submit4,
         string $token
     ): array {
-        $rm = $this->sendEmailsController->getManager();
-        $lr = $rm->getRepository(ListRepository::class);
-        $er = $rm->getRepository(EmailRepository::class);
-        $tr = $rm->getRepository(TextRepository::class);
-        $sr = $rm->getRepository(SendRepository::class);
+        $lr = $this->rm->getRepository(ListRepository::class);
+        $er = $this->rm->getRepository(EmailRepository::class);
+        $tr = $this->rm->getRepository(TextRepository::class);
+        $sr = $this->rm->getRepository(SendRepository::class);
 
         if ($submit) {
             $this->selectEmailListValidator->validate($list, $token);

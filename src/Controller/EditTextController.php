@@ -18,7 +18,7 @@ class EditTextController extends Controller
         $editTextValidator = new EditTextValidator($csrfToken);
 
         $editTextService = new EditTextService(
-            $this,
+            $this->getManager(),
             $html,
             $csrfToken,
             $editTextValidator

@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\{Html, Key};
-use App\Controller\ChangePasswordController;
-use App\Core\{Config, Email, Token};
+use App\Core\{Config, Email, Manager, Token};
 use App\Repository\UserRepository;
 use App\Validator\ChangePasswordValidator;
 
 class ChangePasswordService
 {
-    protected ChangePasswordController $changePasswordController;
+    protected Manager $rm;
     protected Config $config;
     protected Email $mail;
     protected Html $html;
@@ -21,7 +20,7 @@ class ChangePasswordService
     protected ChangePasswordValidator $changePasswordValidator;
 
     public function __construct(
-        ChangePasswordController $changePasswordController,
+        Manager $rm,
         Config $config,
         Email $mail,
         Html $html,
@@ -29,7 +28,7 @@ class ChangePasswordService
         Token $csrfToken,
         ChangePasswordValidator $changePasswordValidator
     ) {
-        $this->changePasswordController = $changePasswordController;
+        $this->rm = $rm;
         $this->config = $config;
         $this->mail = $mail;
         $this->html = $html;
@@ -46,8 +45,7 @@ class ChangePasswordService
         string $user,
         string $code
     ): array {
-        $rm = $this->changePasswordController->getManager();
-        $ur = $rm->getRepository(UserRepository::class);
+        $ur = $this->rm->getRepository(UserRepository::class);
 
         if ($user !== '' && $code !== '') {
             $changeUserData = $ur->getChangeUserData($user);

@@ -11,7 +11,9 @@ class UnsubscribeNewsletterController extends Controller
 {
     public function unsubscribeNewsletterAction(array $request): array
     {
-        $unsubscribeNewsletterService = new UnsubscribeNewsletterService($this);
+        $unsubscribeNewsletterService = new UnsubscribeNewsletterService(
+            $this->getManager()
+        );
 
         $array = $unsubscribeNewsletterService->unsubscribeNewsletterAction(
             (int) ($request['email'] ?? 0),

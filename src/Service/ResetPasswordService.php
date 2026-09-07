@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\Html;
-use App\Controller\ResetPasswordController;
-use App\Core\{Config, Email, Token};
+use App\Core\{Config, Email, Manager, Token};
 use App\Repository\UserRepository;
 use App\Validator\ResetPasswordValidator;
 
 class ResetPasswordService
 {
-    protected ResetPasswordController $resetPasswordController;
+    protected Manager $rm;
     protected Config $config;
     protected Email $mail;
     protected Html $html;
@@ -20,14 +19,14 @@ class ResetPasswordService
     protected ResetPasswordValidator $resetPasswordValidator;
 
     public function __construct(
-        ResetPasswordController $resetPasswordController,
+        Manager $rm,
         Config $config,
         Email $mail,
         Html $html,
         Token $csrfToken,
         ResetPasswordValidator $resetPasswordValidator
     ) {
-        $this->resetPasswordController = $resetPasswordController;
+        $this->rm = $rm;
         $this->config = $config;
         $this->mail = $mail;
         $this->html = $html;
@@ -40,8 +39,7 @@ class ResetPasswordService
         bool $submit,
         string $token
     ): array {
-        $rm = $this->resetPasswordController->getManager();
-        $ur = $rm->getRepository(UserRepository::class);
+        $ur = $this->rm->getRepository(UserRepository::class);
 
         if ($submit) {
             $this->resetPasswordValidator->validate($login, $token);

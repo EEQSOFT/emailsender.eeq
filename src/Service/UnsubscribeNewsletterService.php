@@ -4,26 +4,23 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Controller\UnsubscribeNewsletterController;
+use App\Core\Manager;
 use App\Repository\EmailRepository;
 
 class UnsubscribeNewsletterService
 {
-    protected UnsubscribeNewsletterController $unsubscribeNewsletterController;
+    protected Manager $rm;
 
-    public function __construct(
-        UnsubscribeNewsletterController $unsubscribeNewsletterController
-    ) {
-        $this->unsubscribeNewsletterController =
-            $unsubscribeNewsletterController;
+    public function __construct(Manager $rm)
+    {
+        $this->rm = $rm;
     }
 
     public function unsubscribeNewsletterAction(
         int $email,
         string $code
     ): array {
-        $rm = $this->unsubscribeNewsletterController->getManager();
-        $er = $rm->getRepository(EmailRepository::class);
+        $er = $this->rm->getRepository(EmailRepository::class);
 
         if ($email > 0 && $code !== '') {
             $unsubscribingEmailData = $er->getUnsubscribingEmailData($email);

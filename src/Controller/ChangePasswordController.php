@@ -21,7 +21,7 @@ class ChangePasswordController extends Controller
         $changePasswordValidator = new ChangePasswordValidator($csrfToken);
 
         $changePasswordService = new ChangePasswordService(
-            $this,
+            $this->getManager(),
             $config,
             $mail,
             $html,

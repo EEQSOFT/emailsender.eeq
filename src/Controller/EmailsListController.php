@@ -20,7 +20,7 @@ class EmailsListController extends Controller
         $searchEmailValidator = new SearchEmailValidator($csrfToken);
 
         $emailsListService = new EmailsListService(
-            $this,
+            $this->getManager(),
             $config,
             $html,
             $csrfToken,
