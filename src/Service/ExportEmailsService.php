@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\Html;
-use App\Controller\ExportEmailsController;
-use App\Core\{Cache, Token};
+use App\Core\{Cache, Manager, Token};
 use App\Repository\{EmailRepository, ListRepository};
 use App\Validator\{ExportEmailsValidator, SelectEmailListValidator};
 
 class ExportEmailsService
 {
-    protected ExportEmailsController $exportEmailsController;
+    protected Manager $rm;
     protected Cache $cache;
     protected Html $html;
     protected Token $csrfToken;
@@ -20,14 +19,14 @@ class ExportEmailsService
     protected ExportEmailsValidator $exportEmailsValidator;
 
     public function __construct(
-        ExportEmailsController $exportEmailsController,
+        Manager $rm,
         Cache $cache,
         Html $html,
         Token $csrfToken,
         SelectEmailListValidator $selectEmailListValidator,
         ExportEmailsValidator $exportEmailsValidator
     ) {
-        $this->exportEmailsController = $exportEmailsController;
+        $this->rm = $rm;
         $this->cache = $cache;
         $this->html = $html;
         $this->csrfToken = $csrfToken;
@@ -41,9 +40,8 @@ class ExportEmailsService
         bool $submit2,
         string $token
     ): array {
-        $rm = $this->exportEmailsController->getManager();
-        $lr = $rm->getRepository(ListRepository::class);
-        $er = $rm->getRepository(EmailRepository::class);
+        $lr = $this->rm->getRepository(ListRepository::class);
+        $er = $this->rm->getRepository(EmailRepository::class);
 
         if ($submit) {
             $this->selectEmailListValidator->validate($list, $token);

@@ -1,7 +1,7 @@
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="<?= $array['url'] ?>/">EmailSender with Newsletter</a>
+            <a class="navbar-brand" href="https://www.eeqsoft.com/eeq-emailsender" title="Newsletter PHP Script">&copy; EEQ EmailSender with Newsletter</a>
         </div>
 
         <?php if ($settings['role'] === 'user' || $settings['role'] === 'admin') { ?>

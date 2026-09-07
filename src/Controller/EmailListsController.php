@@ -22,7 +22,7 @@ class EmailListsController extends Controller
         $deleteEmailListValidator = new DeleteEmailListValidator($csrfToken);
 
         $emailListsService = new EmailListsService(
-            $this,
+            $this->getManager(),
             $html,
             $csrfToken,
             $addEmailListValidator,

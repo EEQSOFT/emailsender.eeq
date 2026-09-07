@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\Html;
-use App\Controller\EmailsListController;
-use App\Core\{Config, Token};
+use App\Core\{Config, Manager, Token};
 use App\Repository\{EmailRepository, ListRepository};
 use App\Validator\{SearchEmailValidator, SelectEmailListValidator};
 
 class EmailsListService
 {
-    protected EmailsListController $emailsListController;
+    protected Manager $rm;
     protected Config $config;
     protected Html $html;
     protected Token $csrfToken;
@@ -20,14 +19,14 @@ class EmailsListService
     protected SearchEmailValidator $searchEmailValidator;
 
     public function __construct(
-        EmailsListController $emailsListController,
+        Manager $rm,
         Config $config,
         Html $html,
         Token $csrfToken,
         SelectEmailListValidator $selectEmailListValidator,
         SearchEmailValidator $searchEmailValidator
     ) {
-        $this->emailsListController = $emailsListController;
+        $this->rm = $rm;
         $this->config = $config;
         $this->html = $html;
         $this->csrfToken = $csrfToken;
@@ -44,9 +43,8 @@ class EmailsListService
         int $level,
         int $delete
     ): array {
-        $rm = $this->emailsListController->getManager();
-        $lr = $rm->getRepository(ListRepository::class);
-        $er = $rm->getRepository(EmailRepository::class);
+        $lr = $this->rm->getRepository(ListRepository::class);
+        $er = $this->rm->getRepository(EmailRepository::class);
 
         if ($submit) {
             $this->selectEmailListValidator->validate($list, $token);

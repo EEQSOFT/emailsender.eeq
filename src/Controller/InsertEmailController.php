@@ -23,7 +23,7 @@ class InsertEmailController extends Controller
         );
 
         $insertEmailService = new InsertEmailService(
-            $this,
+            $this->getManager(),
             $config,
             $html,
             $csrfToken,

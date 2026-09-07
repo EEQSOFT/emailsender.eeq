@@ -20,7 +20,7 @@ class ResetPasswordController extends Controller
         $resetPasswordValidator = new ResetPasswordValidator($csrfToken);
 
         $resetPasswordService = new ResetPasswordService(
-            $this,
+            $this->getManager(),
             $config,
             $mail,
             $html,

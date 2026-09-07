@@ -5,27 +5,26 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\Html;
-use App\Controller\SubscribeNewsletterController;
-use App\Core\{Config, Token};
+use App\Core\{Config, Manager, Token};
 use App\Repository\{EmailRepository, ListRepository};
 use App\Validator\SubscribeNewsletterValidator;
 
 class SubscribeNewsletterService
 {
-    protected SubscribeNewsletterController $subscribeNewsletterController;
+    protected Manager $rm;
     protected Config $config;
     protected Html $html;
     protected Token $csrfToken;
     protected SubscribeNewsletterValidator $subscribeNewsletterValidator;
 
     public function __construct(
-        SubscribeNewsletterController $subscribeNewsletterController,
+        Manager $rm,
         Config $config,
         Html $html,
         Token $csrfToken,
         SubscribeNewsletterValidator $subscribeNewsletterValidator
     ) {
-        $this->subscribeNewsletterController = $subscribeNewsletterController;
+        $this->rm = $rm;
         $this->config = $config;
         $this->html = $html;
         $this->csrfToken = $csrfToken;
@@ -39,9 +38,8 @@ class SubscribeNewsletterService
         string $token,
         string $newsletter
     ): array {
-        $rm = $this->subscribeNewsletterController->getManager();
-        $lr = $rm->getRepository(ListRepository::class);
-        $er = $rm->getRepository(EmailRepository::class);
+        $lr = $this->rm->getRepository(ListRepository::class);
+        $er = $this->rm->getRepository(EmailRepository::class);
 
         if ($submit) {
             if (!$lr->isListName($newsletter)) {

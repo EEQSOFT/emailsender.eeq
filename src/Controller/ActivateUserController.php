@@ -14,7 +14,10 @@ class ActivateUserController extends Controller
     {
         $key = new Key();
 
-        $activateUserService = new ActivateUserService($this, $key);
+        $activateUserService = new ActivateUserService(
+            $this->getManager(),
+            $key
+        );
 
         $array = $activateUserService->activateUserAction(
             (string) ($request['user'] ?? ''),

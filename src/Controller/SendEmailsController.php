@@ -25,7 +25,7 @@ class SendEmailsController extends Controller
         $sendEmailsValidator = new SendEmailsValidator($csrfToken);
 
         $sendEmailsService = new SendEmailsService(
-            $this,
+            $this->getManager(),
             $cron,
             $html,
             $csrfToken,

@@ -5,27 +5,26 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\Html;
-use App\Controller\WriteTextController;
-use App\Core\{Config, Token};
+use App\Core\{Config, Manager, Token};
 use App\Repository\TextRepository;
 use App\Validator\WriteTextValidator;
 
 class WriteTextService
 {
-    protected WriteTextController $writeTextController;
+    protected Manager $rm;
     protected Config $config;
     protected Html $html;
     protected Token $csrfToken;
     protected WriteTextValidator $writeTextValidator;
 
     public function __construct(
-        WriteTextController $writeTextController,
+        Manager $rm,
         Config $config,
         Html $html,
         Token $csrfToken,
         WriteTextValidator $writeTextValidator
     ) {
-        $this->writeTextController = $writeTextController;
+        $this->rm = $rm;
         $this->config = $config;
         $this->html = $html;
         $this->csrfToken = $csrfToken;
@@ -40,8 +39,7 @@ class WriteTextService
         int $level,
         int $delete
     ): array {
-        $rm = $this->writeTextController->getManager();
-        $tr = $rm->getRepository(TextRepository::class);
+        $tr = $this->rm->getRepository(TextRepository::class);
 
         if ($submit) {
             $this->writeTextValidator->validate($subject, $message, $token);

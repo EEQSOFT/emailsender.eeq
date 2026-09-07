@@ -20,7 +20,7 @@ class ExportEmailsController extends Controller
         $exportEmailsValidator = new ExportEmailsValidator($csrfToken);
 
         $exportEmailsService = new ExportEmailsService(
-            $this,
+            $this->getManager(),
             $cache,
             $html,
             $csrfToken,

@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\{Html, Key};
-use App\Controller\RegisterUserController;
-use App\Core\{Cache, Config, Email, Token};
+use App\Core\{Cache, Config, Email, Manager, Token};
 use App\Repository\{OptionRepository, UserRepository};
 use App\Validator\RegisterUserValidator;
 
 class RegisterUserService
 {
-    protected RegisterUserController $registerUserController;
+    protected Manager $rm;
     protected Config $config;
     protected Cache $cache;
     protected Email $mail;
@@ -22,7 +21,7 @@ class RegisterUserService
     protected RegisterUserValidator $registerUserValidator;
 
     public function __construct(
-        RegisterUserController $registerUserController,
+        Manager $rm,
         Config $config,
         Cache $cache,
         Email $mail,
@@ -31,7 +30,7 @@ class RegisterUserService
         Token $csrfToken,
         RegisterUserValidator $registerUserValidator
     ) {
-        $this->registerUserController = $registerUserController;
+        $this->rm = $rm;
         $this->config = $config;
         $this->cache = $cache;
         $this->mail = $mail;
@@ -50,9 +49,8 @@ class RegisterUserService
         bool $submit,
         string $token
     ): array {
-        $rm = $this->registerUserController->getManager();
-        $or = $rm->getRepository(OptionRepository::class);
-        $ur = $rm->getRepository(UserRepository::class);
+        $or = $this->rm->getRepository(OptionRepository::class);
+        $ur = $this->rm->getRepository(UserRepository::class);
 
         if ($submit) {
             $this->registerUserValidator->validate(

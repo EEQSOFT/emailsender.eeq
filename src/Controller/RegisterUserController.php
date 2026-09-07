@@ -41,7 +41,7 @@ class RegisterUserController extends Controller
         }
 
         $registerUserService = new RegisterUserService(
-            $this,
+            $this->getManager(),
             $config,
             $cache,
             $mail,

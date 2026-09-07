@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Bundle\Html;
-use App\Controller\InsertEmailController;
-use App\Core\{Config, Token};
+use App\Core\{Config, Manager, Token};
 use App\Repository\{EmailRepository, ListRepository};
 use App\Validator\{InsertEmailValidator, SelectEmailListValidator};
 
 class InsertEmailService
 {
-    protected InsertEmailController $insertEmailController;
+    protected Manager $rm;
     protected Config $config;
     protected Html $html;
     protected Token $csrfToken;
@@ -20,14 +19,14 @@ class InsertEmailService
     protected InsertEmailValidator $insertEmailValidator;
 
     public function __construct(
-        InsertEmailController $insertEmailController,
+        Manager $rm,
         Config $config,
         Html $html,
         Token $csrfToken,
         SelectEmailListValidator $selectEmailListValidator,
         InsertEmailValidator $insertEmailValidator
     ) {
-        $this->insertEmailController = $insertEmailController;
+        $this->rm = $rm;
         $this->config = $config;
         $this->html = $html;
         $this->csrfToken = $csrfToken;
@@ -43,9 +42,8 @@ class InsertEmailService
         bool $submit2,
         string $token
     ): array {
-        $rm = $this->insertEmailController->getManager();
-        $lr = $rm->getRepository(ListRepository::class);
-        $er = $rm->getRepository(EmailRepository::class);
+        $lr = $this->rm->getRepository(ListRepository::class);
+        $er = $this->rm->getRepository(EmailRepository::class);
 
         if ($submit) {
             $this->selectEmailListValidator->validate($list, $token);
