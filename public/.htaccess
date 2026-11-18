@@ -3,7 +3,7 @@ ErrorDocument 404 /error.php?code=404
 ErrorDocument 500 /error.php?code=500
 
 DirectoryIndex index.html index.php /error.php?code=403
-AddHandler application/x-httpd-ea-php80 .php
+AddHandler application/x-httpd-ea-php82 .php
 
 # php_flag register_globals off
 # php_value default_charset utf-8
