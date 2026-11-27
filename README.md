@@ -2,7 +2,7 @@
 
 ## Setup/Installation
 
-### 1. Set the root directory of the php files to "public"
+### 1. Set the root directory of the php files to `public/`
 
 Set the path for your hosting:
 
@@ -18,9 +18,9 @@ Use the database name as in your config:
 for example: "emailsender"
 ```
 
-### 3. Change the settings in the "database.php" file
+### 3. Change the settings in the `database.php` file
 
-Set as in the "database.php.dist" file (check "config"):
+Set as in the `database.php.dist` file (check `config/`):
 
 ```
 'db_host' => 'localhost'
@@ -32,13 +32,13 @@ Set as in the "database.php.dist" file (check "config"):
 
 ### 4. If necessary, set these permissions
 
-Change the permissions of the "options.php" file to 666:
+Change the permissions of the `options.php` file to 644 (www‑data:www‑data):
 
 ```
 <path to project>/config/options.php
 ```
 
-Change the permissions of the directories to 777:
+Change the permissions of the directories to 755 (www‑data:www‑data):
 
 ```
 <path to project>/cron
@@ -46,7 +46,7 @@ Change the permissions of the directories to 777:
 <path to project>/data/Import
 ```
 
-### 5. Install the application by running the "install.php" file
+### 5. Install the application by running the `install.php` file
 
 Open the url below in your browser:
 
@@ -80,19 +80,19 @@ If your email sending starts without errors, everything is fine.
 cd <path to project>
 ```
 
-### 2. Start the application stack defined in "docker-compose.yml"
+### 2. Start the application stack defined in `docker-compose.yml`
 
 ```
 docker-compose up -d
 ```
 
-### 3. Set the permissions and access for the "php-apache" container
+### 3. Set the permissions and access for the php-apache container
 
 ```
 docker exec -it php-apache bash
 cd /var/www
 ls -l
-chmod 777 /var/www/html
+chmod 755 /var/www/html
 chown -R www-data:www-data /var/www/html
 ls -l
 exit

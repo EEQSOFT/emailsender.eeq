@@ -13,7 +13,7 @@
 
         <style>
             body {
-                margin: 40px 20px 40px 20px;
+                margin: 40px 20px;
                 font-family: Arial, Helvetica, sans-serif;
             }
 
@@ -40,61 +40,21 @@
                 overflow-x: auto;
             }
 
-            code {
-                white-space: pre;
-            }
-
-            .code {
+            pre {
                 padding: 0 15px;
                 border-radius: 5px;
                 background: #eee;
                 overflow-x: auto;
             }
 
+            code {
+                white-space: pre;
+            }
+
             .container {
                 max-width: 770px;
                 margin-left: auto;
                 margin-right: auto;
-            }
-
-            @media (min-width: 2500px) {
-                body {
-                    margin: 80px 40px 80px 40px;
-                    font-size: 32px;
-                }
-
-                h1 {
-                    margin: 40px 0 40px 0;
-                    font-size: 72px;
-                }
-
-                h2 {
-                    margin: 40px 0 40px 0;
-                    font-size: 56px;
-                }
-
-                h3 {
-                    margin: 40px 0 40px 0;
-                    font-size: 38px;
-                }
-
-                p {
-                    margin-top: 30px;
-                    margin-bottom: 30px;
-                    line-height: 36px;
-                }
-
-                blockquote {
-                    margin-left: 40px;
-                    padding: 20px;
-                    border-left: 8px solid #aaa;
-                }
-
-                .container {
-                    width: 1540px;
-                    max-width: 1540px;
-                    margin-bottom: 40px;
-                }
             }
         </style>
     </head>
@@ -170,14 +130,11 @@
                 'db_database' => 'emailsender'
             </blockquote>
 
-            <p>
-                If necessary, set these permissions.
-                Change the permissions of the "options.php" file to 666:
-            </p>
+            <p>If necessary, set the permissions of the "options.php" file to 644 (www‑data:www‑data):</p>
 
             <blockquote>&lt;path to project&gt;/config/options.php</blockquote>
 
-            <p>Change the permissions of the directories to 777:</p>
+            <p>Change the permissions of the directories to 755 (www‑data:www‑data):</p>
 
             <blockquote>
                 &lt;path to project&gt;/cron<br>
@@ -360,7 +317,7 @@
                 docker exec -it php-apache bash<br>
                 cd /var/www<br>
                 ls -l<br>
-                chmod 777 /var/www/html<br>
+                chmod 755 /var/www/html<br>
                 chown -R www-data:www-data /var/www/html<br>
                 ls -l<br>
                 exit
