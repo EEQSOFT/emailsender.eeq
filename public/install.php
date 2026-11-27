@@ -20,7 +20,11 @@ setcookie('cookie_login', '', 0, '/', $config->getServerName());
 
 session_destroy();
 
-if (!chmod(OPTIONS_FILE, octdec('666'))) {
+if (
+    !chown(OPTIONS_FILE, 'www-data')
+    || !chgrp(OPTIONS_FILE, 'www-data')
+    || !chmod(OPTIONS_FILE, octdec('644'))
+) {
 ?>
     <link rel="stylesheet" href="<?= $config->getUrl() ?>/css/bootstrap.min.css" />
 
@@ -28,7 +32,7 @@ if (!chmod(OPTIONS_FILE, octdec('666'))) {
         <h2>Information</h2>
 
         <div class="alert alert-info">
-            <strong>Info!</strong> Change the permissions of the "config/options.php" file to 666.
+            <strong>Info!</strong> Change the permissions of the "config/options.php" file to 644 (www‑data:www‑data).
         </div>
     </div>
 <?php
